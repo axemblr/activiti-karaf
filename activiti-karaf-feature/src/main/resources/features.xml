@@ -14,40 +14,10 @@
     limitations under the License.
 -->
 <!-- @author Srinivasan Chikkala  -->
-<features>
-	<feature name="${artifactId}" version="${version}">
-		<!-- Required features -->
-		<feature>jpa</feature>
-		<feature>spring</feature>
-		<feature>spring-dm</feature>
-		<feature>spring-dm-web</feature>
-		<feature>war</feature>
-		<bundle>mvn:com.fasterxml.uuid/java-uuid-generator/${java-uuid-generator.version}</bundle>
-		<bundle>mvn:org.springframework/spring-jdbc/${spring.version}</bundle>
-		<bundle>mvn:org.springframework/spring-orm/${spring.version}</bundle>
-		<bundle>mvn:org.springframework/spring-tx/${spring.version}</bundle>
-		<bundle>mvn:org.springframework/spring-test/${spring.version}</bundle>
-		<bundle>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.activation-api-1.1/${javax.activation.version}</bundle>
-		<bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javax.mail/${javax.mail.version}</bundle>
-		<bundle>mvn:org.apache.commons/commons-email/${commons-email.version}</bundle>	
-		<bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.antlr/${antlr.version}</bundle>
-		<bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.asm/${asm.version}</bundle>
-		<bundle>mvn:org.codehaus.groovy/groovy/${groovy.version}</bundle>
-		<bundle>mvn:com.h2database/h2/${h2.version}</bundle>
-		<!--   <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.mybatis/${mybatis.version}</bundle> -->
-        <bundle>mvn:org.mybatis/mybatis/${mybatis.version}</bundle>
-        <bundle>mvn:org.drools/knowledge-api/${drools.version}</bundle>
-        <!-- 
-		<bundle>mvn:org.drools/drools-core/${drools.version}</bundle>
-        <bundle>mvn:org.drools/drools-compiler/${drools.version}</bundle>
-        -->
-        <!-- above are the activiti engine deps -->		
-		<bundle>mvn:org.activiti/activiti-engine/${activiti.version}</bundle>
-		<bundle>wrap:mvn:org.activiti/activiti-spring/${activiti.version}</bundle>
-		<bundle>mvn:org.activiti/activiti-osgi/${activiti.version}</bundle>
-		<bundle>mvn:${groupId}/activiti-karaf-support/${version}</bundle>
-		<bundle>mvn:com.google.code.gson/gson/${gson.version}</bundle>
-		<bundle>mvn:${groupId}/activiti-karaf-commands/${version}</bundle>
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.0.0">
+	<feature name="${artifactId}" version="${project.version}">
+        <feature version="${activiti.version}">activiti</feature>
+        <bundle>mvn:${groupId}/activiti-karaf-support/${version}</bundle>
 		<!--  webapps  -->
 		<!--  for activiti-rest -->
 		<bundle>mvn:commons-io/commons-io/2.0.1</bundle>
@@ -59,10 +29,7 @@
 		<bundle>mvn:org.restlet.jee/org.restlet.ext.jackson/2.0.8</bundle>
 		<bundle>mvn:org.restlet.jee/org.restlet.ext.fileupload/2.0.8</bundle>
 		<bundle start='true'>mvn:${groupId}/activiti-karaf-web-rest/${version}/war</bundle>
-		<!--  for activiti-explorer -->
-		<bundle>mvn:com.vaadin/vaadin/${vaadin.version}</bundle>
-		<bundle>wrap:mvn:com.thebuzzmedia/imgscalr-lib/3.1</bundle>
-		<bundle start='true'>mvn:${groupId}/activiti-karaf-web-explorer/${version}/war</bundle>
+        <feature version="${project.version}">activiti-karaf-web-explorer</feature>
 		<!--  for activiti-modeler -->
 		<bundle>wrap:mvn:org.json/json/20070829</bundle>
 		<bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-lang/2.4_6</bundle>
@@ -78,13 +45,59 @@
         <bundle>wrap:mvn:org.apache.xmlgraphics/batik-codec/1.7</bundle>
         <bundle>wrap:mvn:org.apache.xmlgraphics/batik-ext/1.7$Bundle-SymbolicName=batik-ext</bundle>
         <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.batik/${batik.osgi.version}</bundle>
-        
+
         <bundle>mvn:org.activiti.karaf.bpmn.webui/bpmn-webui-diagram-core/${version}</bundle>
         <bundle>mvn:org.activiti.karaf.bpmn.webui/bpmn-webui-bpmn20-model/${version}</bundle>
         <bundle>mvn:org.activiti.karaf.bpmn.webui/bpmn-webui-syntaxchecker/${version}</bundle>
-        <bundle>mvn:org.activiti.karaf.bpmn.webui/bpmn-webui-platform/${version}</bundle>  
-        
-        <bundle start='true'>mvn:org.activiti.karaf.bpmn.webui/bpmn-webui/${version}/war</bundle>  	
+        <bundle>mvn:org.activiti.karaf.bpmn.webui/bpmn-webui-platform/${version}</bundle>
+
+        <bundle start='true'>mvn:org.activiti.karaf.bpmn.webui/bpmn-webui/${version}/war</bundle>
 	</feature>
+
+    <feature name="activiti" version="${project.version}">
+        <!-- Required features -->
+        <feature>jpa</feature>
+        <feature>spring</feature>
+        <feature>spring-dm</feature>
+        <feature>spring-dm-web</feature>
+        <feature>war</feature>
+        <bundle>mvn:com.fasterxml.uuid/java-uuid-generator/${java-uuid-generator.version}</bundle>
+        <bundle>mvn:org.springframework/spring-jdbc/${spring.version}</bundle>
+        <bundle>mvn:org.springframework/spring-orm/${spring.version}</bundle>
+        <bundle>mvn:org.springframework/spring-tx/${spring.version}</bundle>
+        <bundle>mvn:org.springframework/spring-test/${spring.version}</bundle>
+        <bundle>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.activation-api-1.1/${javax.activation.version}</bundle>
+        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javax.mail/${javax.mail.version}</bundle>
+        <bundle>mvn:org.apache.commons/commons-email/${commons-email.version}</bundle>
+        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.antlr/${antlr.version}</bundle>
+        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.asm/${asm.version}</bundle>
+        <bundle>mvn:org.codehaus.groovy/groovy/${groovy.version}</bundle>
+        <bundle>mvn:com.h2database/h2/${h2.version}</bundle>
+        <!--   <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.mybatis/${mybatis.version}</bundle> -->
+        <bundle>mvn:org.mybatis/mybatis/${mybatis.version}</bundle>
+        <bundle>mvn:org.drools/knowledge-api/${drools.version}</bundle>
+        <!--
+		<bundle>mvn:org.drools/drools-core/${drools.version}</bundle>
+        <bundle>mvn:org.drools/drools-compiler/${drools.version}</bundle>
+        -->
+        <!-- above are the activiti engine deps -->
+        <bundle>mvn:org.activiti/activiti-engine/${activiti.version}</bundle>
+        <bundle>wrap:mvn:org.activiti/activiti-spring/${activiti.version}</bundle>
+        <bundle>mvn:org.activiti/activiti-osgi/${activiti.version}</bundle>
+    </feature>
+
+    <feature name="activiti-karaf-commands" version="${project.version}">
+        <!--<feature version="${activiti.version}">activiti</feature>-->
+        <bundle>mvn:com.google.code.gson/gson/${gson.version}</bundle>
+        <bundle>mvn:${groupId}/activiti-karaf-commands/${version}</bundle>
+    </feature>
+
+    <feature name="activiti-karaf-web-explorer" version="${project.version}">
+        <!--  for activiti-explorer -->
+        <bundle>mvn:com.vaadin/vaadin/${vaadin.version}</bundle>
+        <bundle>wrap:mvn:com.thebuzzmedia/imgscalr-lib/3.1</bundle>
+        <bundle start='true'>mvn:${groupId}/activiti-karaf-web-explorer/${version}/war</bundle>
+    </feature>
+
 </features>    
 
