@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="Hello" name="hello">
+    <documentation>Place documentation for the 'hello' process here.</documentation>
+    <startEvent id="startevent1" name="Start"></startEvent>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <scriptTask id="scriptTaskId1" name="Set Msg Script 1" scriptFormat="groovy">
+      <script><![CDATA[printMsg = "#### Hello   ####"]]></script>
+    </scriptTask>
+    <sequenceFlow id="flow1" name="" sourceRef="startevent1" targetRef="scriptTaskId1"></sequenceFlow>
+    <scriptTask id="scriptTaskId2" name="Set Msg Script 2" scriptFormat="groovy">
+      <script><![CDATA[printMsg = "#### World!! ####"]]></script>
+    </scriptTask>
+    <sequenceFlow id="flow4" name="" sourceRef="scriptTaskId1" targetRef="ServiceTaskId1"></sequenceFlow>
+    <serviceTask id="ServiceTaskId1" name="Print Service 1" activiti:class="org.activiti.karaf.examples.hello.PrintService"></serviceTask>
+    <serviceTask id="ServiceTaskId2" name="Print Service 2" activiti:class="org.activiti.karaf.examples.hello.PrintService"></serviceTask>
+    <sequenceFlow id="flow6" name="" sourceRef="scriptTaskId2" targetRef="ServiceTaskId2"></sequenceFlow>
+    <sequenceFlow id="flow7" name="" sourceRef="ServiceTaskId2" targetRef="endevent1"></sequenceFlow>
+    <sequenceFlow id="flow8" name="" sourceRef="ServiceTaskId1" targetRef="scriptTaskId2"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Hello">
+    <bpmndi:BPMNPlane bpmnElement="Hello" id="BPMNPlane_Hello">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="35" width="35" x="40" y="50"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35" width="35" x="420" y="140"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="scriptTaskId1" id="BPMNShape_scriptTaskId1">
+        <omgdc:Bounds height="55" width="105" x="110" y="40"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="scriptTaskId2" id="BPMNShape_scriptTaskId2">
+        <omgdc:Bounds height="55" width="105" x="110" y="130"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ServiceTaskId1" id="BPMNShape_ServiceTaskId1">
+        <omgdc:Bounds height="55" width="105" x="261" y="40"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ServiceTaskId2" id="BPMNShape_ServiceTaskId2">
+        <omgdc:Bounds height="55" width="105" x="261" y="130"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="75" y="67"></omgdi:waypoint>
+        <omgdi:waypoint x="110" y="67"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="215" y="67"></omgdi:waypoint>
+        <omgdi:waypoint x="261" y="67"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="215" y="157"></omgdi:waypoint>
+        <omgdi:waypoint x="261" y="157"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
+        <omgdi:waypoint x="366" y="157"></omgdi:waypoint>
+        <omgdi:waypoint x="420" y="157"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+        <omgdi:waypoint x="313" y="95"></omgdi:waypoint>
+        <omgdi:waypoint x="312" y="112"></omgdi:waypoint>
+        <omgdi:waypoint x="163" y="112"></omgdi:waypoint>
+        <omgdi:waypoint x="162" y="130"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

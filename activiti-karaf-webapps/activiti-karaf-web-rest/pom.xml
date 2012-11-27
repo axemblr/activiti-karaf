@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <!--
+        Copyright 2012 Cisco Systems
+        
+        Licensed to the Apache Software Foundation (ASF) under one or more
+        contributor license agreements.  See the NOTICE file distributed with
+        this work for additional information regarding copyright ownership.
+        The ASF licenses this file to You under the Apache License, Version 2.0
+        (the "License"); you may not use this file except in compliance with
+        the License.  You may obtain a copy of the License at
+
+           http://www.apache.org/licenses/LICENSE-2.0
+
+        Unless required by applicable law or agreed to in writing, software
+        distributed under the License is distributed on an "AS IS" BASIS,
+        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        See the License for the specific language governing permissions and
+        limitations under the License.
+    --> 
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.activiti.karaf</groupId>
+		<artifactId>activiti-karaf-webapps</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>activiti-karaf-web-rest</artifactId>
+	<packaging>war</packaging>
+
+	<name>activiti-karaf-web/${project.artifactId}</name>
+	<description>Activiti REST Web Application As OGSi War</description>
+
+	<properties>
+		<activiti.osgi.version.clean>${activiti.version}</activiti.osgi.version.clean>
+		<activiti.osgi.export.pkg />
+		<activiti.osgi.dynamic>*</activiti.osgi.dynamic>
+		<activiti.artifact>
+			org.activiti.karaf.web.rest
+		</activiti.artifact>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.activiti</groupId>
+			<artifactId>activiti-engine</artifactId>
+			<scope>provided</scope>			
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.compendium</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<!-- <dependency> <groupId>org.activiti</groupId> <artifactId>activiti-webapp-rest2</artifactId> 
+			<version>${activiti.version}</version> <type>war</type> <scope>runtime</scope> 
+			</dependency> -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>		
+		<dependency>
+			<groupId>org.restlet.jee</groupId>
+			<artifactId>org.restlet</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.restlet.jee</groupId>
+			<artifactId>org.restlet.ext.servlet</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.restlet.jee</groupId>
+			<artifactId>org.restlet.ext.jackson</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.restlet.jee</groupId>
+			<artifactId>org.restlet.ext.fileupload</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>bundle-manifest</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>manifest</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<dumpClasspath>${project.build.directory}/bundle-classpath.txt</dumpClasspath>
+					<dumpInstructions>${project.build.directory}/bundle-instructions.txt</dumpInstructions>
+					<manifestLocation>${project.build.directory}</manifestLocation>
+					<supportedProjectTypes>
+						<supportedProjectType>jar</supportedProjectType>
+						<supportedProjectType>bundle</supportedProjectType>
+						<supportedProjectType>war</supportedProjectType>
+					</supportedProjectTypes>
+					<instructions>
+					   <!--   <Embed-Directory>WEB-INF/lib</Embed-Directory>  -->
+					   <Embed-Transitive>true</Embed-Transitive>
+					   <Bundle-ClassPath>.,WEB-INF/classes</Bundle-ClassPath>
+					   <Webapp-Context>activiti-rest</Webapp-Context> 
+					</instructions>					
+					<!-- <instructions> <Bundle-ClassPath>.,WEB-INF/classes</Bundle-ClassPath> 
+						<Embed-Directory>WEB-INF/lib</Embed-Directory> <Embed-Transitive>true</Embed-Transitive> 
+						</instructions> -->
+				</configuration>
+			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestFile>${project.build.directory}/MANIFEST.MF</manifestFile>
+                    </archive>
+                </configuration>
+            </plugin>			
+		</plugins>
+	</build>
+
+</project>

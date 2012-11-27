@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright 2012 Cisco Systems
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+ 
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<!-- @author Srinivasan Chikkala  -->
+<features>
+	<feature name="${artifactId}" version="${version}">
+		<!-- Required features -->
+		<feature>jpa</feature>
+		<feature>spring</feature>
+		<feature>spring-dm</feature>
+		<feature>spring-dm-web</feature>
+		<feature>war</feature>
+		<bundle>mvn:com.fasterxml.uuid/java-uuid-generator/${java-uuid-generator.version}</bundle>
+		<bundle>mvn:org.springframework/spring-jdbc/${spring.version}</bundle>
+		<bundle>mvn:org.springframework/spring-orm/${spring.version}</bundle>
+		<bundle>mvn:org.springframework/spring-tx/${spring.version}</bundle>
+		<bundle>mvn:org.springframework/spring-test/${spring.version}</bundle>
+		<bundle>mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.activation-api-1.1/${javax.activation.version}</bundle>
+		<bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javax.mail/${javax.mail.version}</bundle>
+		<bundle>mvn:org.apache.commons/commons-email/${commons-email.version}</bundle>	
+		<bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.antlr/${antlr.version}</bundle>
+		<bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.asm/${asm.version}</bundle>
+		<bundle>mvn:org.codehaus.groovy/groovy/${groovy.version}</bundle>
+		<bundle>mvn:com.h2database/h2/${h2.version}</bundle>
+		<!--   <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.mybatis/${mybatis.version}</bundle> -->
+        <bundle>mvn:org.mybatis/mybatis/${mybatis.version}</bundle>
+        <bundle>mvn:org.drools/knowledge-api/${drools.version}</bundle>
+        <!-- 
+		<bundle>mvn:org.drools/drools-core/${drools.version}</bundle>
+        <bundle>mvn:org.drools/drools-compiler/${drools.version}</bundle>
+        -->
+        <!-- above are the activiti engine deps -->		
+		<bundle>mvn:org.activiti/activiti-engine/${activiti.version}</bundle>
+		<bundle>wrap:mvn:org.activiti/activiti-spring/${activiti.version}</bundle>
+		<bundle>mvn:org.activiti/activiti-osgi/${activiti.version}</bundle>
+		<bundle>mvn:${groupId}/activiti-karaf-support/${version}</bundle>
+		<bundle>mvn:com.google.code.gson/gson/${gson.version}</bundle>
+		<bundle>mvn:${groupId}/activiti-karaf-commands/${version}</bundle>
+		<!--  webapps  -->
+		<!--  for activiti-rest -->
+		<bundle>mvn:commons-io/commons-io/2.0.1</bundle>
+		<bundle>mvn:commons-fileupload/commons-fileupload/1.2.2</bundle>
+		<bundle>mvn:org.codehaus.jackson/jackson-core-asl/1.4.3</bundle>
+		<bundle>mvn:org.codehaus.jackson/jackson-mapper-asl/1.4.3</bundle>
+		<bundle>mvn:org.restlet.jee/org.restlet/2.0.8</bundle>
+		<bundle>mvn:org.restlet.jee/org.restlet.ext.servlet/2.0.8</bundle>
+		<bundle>mvn:org.restlet.jee/org.restlet.ext.jackson/2.0.8</bundle>
+		<bundle>mvn:org.restlet.jee/org.restlet.ext.fileupload/2.0.8</bundle>
+		<bundle start='true'>mvn:${groupId}/activiti-karaf-web-rest/${version}/war</bundle>
+		<!--  for activiti-explorer -->
+		<bundle>mvn:com.vaadin/vaadin/${vaadin.version}</bundle>
+		<bundle>wrap:mvn:com.thebuzzmedia/imgscalr-lib/3.1</bundle>
+		<bundle start='true'>mvn:${groupId}/activiti-karaf-web-explorer/${version}/war</bundle>
+		<!--  for activiti-modeler -->
+		<bundle>wrap:mvn:org.json/json/20070829</bundle>
+		<bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.commons-lang/2.4_6</bundle>
+		<bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.bcel/5.2_4</bundle>
+		<bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xmlresolver/1.2_3</bundle>
+		<bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xerces/2.9.1_5</bundle>
+		<bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xalan/${xalan.osgi.version}</bundle>
+        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.ehcache/1.6.2_2</bundle>
+        <bundle>wrap:mvn:xml-apis/xml-apis-ext/1.3.04</bundle>
+        <bundle>wrap:mvn:org.apache.xmlgraphics/xmlgraphics-commons/1.2</bundle>
+        <bundle>wrap:mvn:org.apache.xmlgraphics/fop/0.94</bundle>
+        <bundle>wrap:mvn:org.apache.xmlgraphics/batik-js/1.7</bundle>
+        <bundle>wrap:mvn:org.apache.xmlgraphics/batik-codec/1.7</bundle>
+        <bundle>wrap:mvn:org.apache.xmlgraphics/batik-ext/1.7$Bundle-SymbolicName=batik-ext</bundle>
+        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.batik/${batik.osgi.version}</bundle>
+        
+        <bundle>mvn:org.activiti.karaf.bpmn.webui/bpmn-webui-diagram-core/${version}</bundle>
+        <bundle>mvn:org.activiti.karaf.bpmn.webui/bpmn-webui-bpmn20-model/${version}</bundle>
+        <bundle>mvn:org.activiti.karaf.bpmn.webui/bpmn-webui-syntaxchecker/${version}</bundle>
+        <bundle>mvn:org.activiti.karaf.bpmn.webui/bpmn-webui-platform/${version}</bundle>  
+        
+        <bundle start='true'>mvn:org.activiti.karaf.bpmn.webui/bpmn-webui/${version}/war</bundle>  	
+	</feature>
+</features>    
+

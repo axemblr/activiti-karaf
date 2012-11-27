@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <!--
+        Copyright 2012 Cisco Systems
+        
+        Licensed to the Apache Software Foundation (ASF) under one or more
+        contributor license agreements.  See the NOTICE file distributed with
+        this work for additional information regarding copyright ownership.
+        The ASF licenses this file to You under the Apache License, Version 2.0
+        (the "License"); you may not use this file except in compliance with
+        the License.  You may obtain a copy of the License at
+
+           http://www.apache.org/licenses/LICENSE-2.0
+
+        Unless required by applicable law or agreed to in writing, software
+        distributed under the License is distributed on an "AS IS" BASIS,
+        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        See the License for the specific language governing permissions and
+        limitations under the License.
+    --> 
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.activiti.karaf</groupId>
+		<artifactId>activiti-karaf-parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../activiti-karaf-parent</relativePath>
+	</parent>
+
+	<artifactId>activiti-karaf-feature</artifactId>
+	<packaging>pom</packaging>
+
+	<name>${project.artifactId}</name>
+	<description>Activiti Karaf - Feature</description>
+	<url>http://activiti.org</url>
+
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>**/*</include>
+				</includes>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>filter</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>resources</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-artifacts</id>
+						<phase>package</phase>
+						<goals>
+							<goal>attach-artifact</goal>
+						</goals>
+						<configuration>
+							<artifacts>
+								<artifact>
+									<file>${project.build.outputDirectory}/features.xml</file>
+									<type>xml</type>
+									<classifier>features</classifier>
+								</artifact>
+							</artifacts>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- <plugin> <groupId>org.apache.karaf.tooling</groupId> <artifactId>features-maven-plugin</artifactId> 
+				<version>${karaf.version}</version> <executions> <execution> <id>add-features-to-repo</id> 
+				<phase>package</phase> <goals> <goal>add-features-to-repo</goal> </goals> 
+				<configuration> <descriptors> <descriptor>${project.baseUri}/target/classes/features.xml</descriptor> 
+				</descriptors> <repository>${project.build.directory}/system</repository> 
+				</configuration> </execution> </executions> </plugin> -->
+		</plugins>
+	</build>
+</project>

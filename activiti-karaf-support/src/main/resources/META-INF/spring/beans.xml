@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright 2012 Cisco Systems
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+ 
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<!--  @author chikkala -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:ctx="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:osgi="http://www.springframework.org/schema/osgi"
+       xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+       xmlns:jaxws="http://cxf.apache.org/jaxws"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/tx      http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+       http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
+       http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd
+       http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd"
+       >
+   <!-- Configuration Admin entry -->
+   <osgix:cm-properties id="bpmnCfg" persistent-id="org.activiti.karaf">
+   
+      <prop key="activiti.db.local">true</prop>
+      <prop key="activiti.db.h2.port">9092</prop>
+      <prop key="activiti.ds.driverClass">org.h2.Driver</prop>
+      <prop key="activiti.ds.url">jdbc:h2:tcp://localhost:${activiti.db.h2.port}/activiti</prop>
+      <prop key="activiti.ds.username">sa</prop>
+      <prop key="activiti.ds.password"></prop>
+      
+      <prop key="activiti.mailServerHost">localhost</prop>
+      <prop key="activiti.mailServerPort">25</prop>      
+      <prop key="activiti.mailServerUseTLS">false</prop>
+      <prop key="activiti.mailServerUsername"></prop>
+      <prop key="activiti.mailServerPassword"></prop>
+      <prop key="activiti.mailServerDefaultFrom">activiti@activiti.org</prop>            
+      
+      <prop key="activiti.databaseSchemaUpdate">true</prop>      
+      <prop key="activiti.jobExecutorActivate">true</prop>
+      <prop key="activiti.history">full</prop>      
+   </osgix:cm-properties>
+
+   <!-- placeholder configurer -->
+   <ctx:property-placeholder properties-ref="bpmnCfg" />
+
+    <bean id = "bpmn.config"
+            class="org.activiti.karaf.support.BpmnConfigProperties"
+            init-method="print" 
+            destroy-method="print" >
+        <property name="localDB" value="${activiti.db.local}" />
+        <property name="h2dbTcpPort" value="${activiti.db.h2.port}" />        
+        <property name="dsDriverClass" value="${activiti.ds.driverClass}" />
+        <property name="dsUrl" value="${activiti.ds.url}" />
+        <property name="dsUsername" value="${activiti.ds.username}" />
+        <property name="dsPassword" value="${activiti.ds.password}" />
+        
+        <property name="mailServerHost" value="${activiti.mailServerHost}" />
+        <property name="mailServerPort" value="${activiti.mailServerPort}" />
+        <property name="mailServerUseTLS" value="${activiti.mailServerUseTLS}" />
+        <property name="mailServerUsername" value="${activiti.mailServerUsername}" />
+        <property name="mailServerPassword" value="${activiti.mailServerPassword}" />
+        <property name="mailServerDefaultFrom" value="${activiti.mailServerDefaultFrom}" />
+        
+        
+        <property name="databaseSchemaUpdate" value="${activiti.databaseSchemaUpdate}" />        
+        <property name="jobExecutorActivate" value="${activiti.jobExecutorActivate}" />
+        <property name="history" value="${activiti.history}" />
+    </bean>
+    
+	<!-- H2 DB setup that optionally starts the H2 DB for BPMN engine
+	The dev environment/default configurations starts the H2 DB as BPMN engine DB-->
+    <bean id="activiti.db.h2.setup"
+            class="org.activiti.karaf.support.H2DBSetup"
+            init-method="start" 
+            destroy-method="stop" >
+        <property name="enabled" value="${activiti.db.local}" />
+        <property name="tcpPort" value="${activiti.db.h2.port}" />
+    </bean>
+
+    <bean id="activiti.dataSource"
+		class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+        <property name="driverClass" value="${activiti.ds.driverClass}" />
+        <property name="url" value="${activiti.ds.url}" />
+        <property name="username" value="${activiti.ds.username}" />
+        <property name="password" value="${activiti.ds.password}" />
+    </bean>
+    
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="activiti.dataSource" />
+    </bean>
+	  <!-- 
+	  <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		  <property name="dataSource" ref="activiti.dataSource"/>
+		  <property name="jpaVendorAdapter">
+			  <bean class="org.springframework.orm.jpa.vendor.OpenJpaVendorAdapter">
+				  <property name="databasePlatform" value="org.apache.openjpa.jdbc.sql.H2Dictionary" />
+			  </bean>
+		  </property>
+	  </bean>
+	  -->
+    <bean id="processEngineConfiguration" class="org.activiti.karaf.support.ProcessEngineConfig">
+        <property name="dataSource" ref="activiti.dataSource" /> 
+        <property name="transactionManager" ref="transactionManager" />         
+        <property name="databaseSchemaUpdate" value="${activiti.databaseSchemaUpdate}" />
+        <property name="jobExecutorActivate" value="${activiti.jobExecutorActivate}" />
+        <property name="history" value="${activiti.history}" />
+        
+        <property name="mailServerHost" value="${activiti.mailServerHost}" />
+        <property name="mailServerPort" value="${activiti.mailServerPort}" />
+        <property name="mailServerUseTLS" value="${activiti.mailServerUseTLS}" />
+        <property name="mailServerUsername" value="${activiti.mailServerUsername}" />
+        <property name="mailServerPassword" value="${activiti.mailServerPassword}" />
+        <property name="mailServerDefaultFrom" value="${activiti.mailServerDefaultFrom}" />
+        
+		<!--  
+		<property name="jpaEntityManagerFactory" ref="entityManagerFactory" />
+		<property name="jpaHandleTransaction" value="${activiti.jpaHandleTransaction}" />
+		<property name="jpaCloseEntityManager" value="${activiti.jpaCloseEntityManager}" />
+		-->
+    </bean>
+    
+    
+    <bean id="bpmnExpressionManager" class="org.activiti.karaf.support.BpmnExpressionManager">
+    </bean>
+
+    <bean id="bpmnScriptResolverFactory" class="org.activiti.karaf.support.BpmnScriptResolverFactory">
+    </bean>
+    
+    <bean id="processEngine" class="org.activiti.karaf.support.BpmnEngineFactoryBean">
+        <property name="bpmnExpressionManager" ref="bpmnExpressionManager" />
+        <property name="bpmnScriptResolverFactory" ref="bpmnScriptResolverFactory" />
+        <property name="processEngineConfiguration" ref="processEngineConfiguration" />
+    </bean>
+    
+    <bean id="bpmnContext" class="org.activiti.karaf.support.internal.BpmnContextImpl">
+        <property name="processEngine" ref="processEngine" />
+        <property name="processEngineConfig" ref="processEngineConfiguration" />
+        <property name="bpmnExpressionManager" ref="bpmnExpressionManager" />
+        <property name="bpmnScriptResolverFactory" ref="bpmnScriptResolverFactory" />
+    </bean>    
+    
+    <bean id="repositoryService" factory-bean="processEngine" factory-method="getRepositoryService" />
+    <bean id="runtimeService" factory-bean="processEngine" factory-method="getRuntimeService" />
+    <bean id="taskService" factory-bean="processEngine"	factory-method="getTaskService" />
+    <bean id="historyService" factory-bean="processEngine" factory-method="getHistoryService" />
+    <bean id="managementService" factory-bean="processEngine" factory-method="getManagementService" />
+
+    <osgi:service id="bpmnContextOSGi" ref="bpmnContext" interface="org.activiti.karaf.support.BpmnContext" />
+
+    <osgi:service id="processEngineOSGi" ref="processEngine" interface="org.activiti.engine.ProcessEngine" />
+    <osgi:service id="repositoryServiceOSGi" ref="repositoryService" interface="org.activiti.engine.RepositoryService" />
+    <osgi:service id="runtimeServiceOSGi" ref="runtimeService" interface="org.activiti.engine.RuntimeService" />
+    <osgi:service id="taskServiceOSGi" ref="taskService" interface="org.activiti.engine.TaskService" />
+    <osgi:service id="historyServiceOSGi" ref="historyService" interface="org.activiti.engine.HistoryService" />
+    <osgi:service id="managementServiceOSGi" ref="managementService" interface="org.activiti.engine.ManagementService" />
+	             				  
+</beans>
+

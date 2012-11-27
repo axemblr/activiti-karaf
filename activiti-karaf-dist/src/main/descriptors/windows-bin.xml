@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright 2012 Cisco Systems
+    
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+ 
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<assembly>
+    <id>bin</id>    
+    <formats>
+        <format>zip</format>
+    </formats>    
+    <fileSets>
+    
+        <!-- Expanded Karaf Standard Distribution -->
+        <fileSet>
+            <directory>${basedir}/target/dependencies/windows/apache-karaf-${karaf.version}</directory>
+            <outputDirectory>/</outputDirectory>
+            <excludes>
+                <exclude>bin/**</exclude>
+                <exclude>demos/**</exclude>
+                <exclude>etc/org.apache.karaf.features.cfg</exclude>
+                <exclude>etc/org.ops4j.pax.logging.cfg</exclude>
+                <exclude>etc/system.properties</exclude>
+                <exclude>etc/users.properties</exclude>
+                <exclude>etc/custom.properties</exclude>
+                <exclude>karaf-manual*</exclude>
+                <exclude>LICENSE</exclude>
+                <exclude>NOTICE</exclude>
+                <exclude>README</exclude>
+                <exclude>RELEASE-NOTES</exclude>
+                <exclude>deploy</exclude>
+            </excludes>
+        </fileSet>
+        
+		<!-- Copy over bin/* separately to get the correct file mode -->
+        <fileSet>
+            <directory>${basedir}/target/dependencies/windows/apache-karaf-${karaf.version}</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>bin/admin.bat</include>
+                <include>bin/client.bat</include>
+                <include>bin/karaf.bat</include>
+                <include>bin/setenv.bat</include>
+                <include>bin/shell.bat</include>
+                <include>bin/start.bat</include>
+                <include>bin/stop.bat</include>
+            </includes>
+            <fileMode>0755</fileMode>
+            <lineEnding>dos</lineEnding>
+        </fileSet>
+                
+        <!-- Copy license and other files from root -->        
+        <fileSet>
+            <directory>${basedir}/..</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>README</include>
+                <include>LICENSE</include>
+                <include>NOTICE</include>
+            </includes>
+            <lineEnding>dos</lineEnding>
+        </fileSet>
+       
+        <!-- Copy etc directory -->
+        <fileSet>
+            <directory>target/classes/etc</directory>
+            <outputDirectory>/etc</outputDirectory>
+            <lineEnding>dos</lineEnding>
+        </fileSet>
+        <!-- Copy ext directory -->
+        <fileSet>
+            <directory>${basedir}/target/dependencies/ext</directory>
+            <outputDirectory>/lib/ext</outputDirectory>
+        </fileSet>
+                
+        <!-- Copy features repo in the system directory -->
+        <fileSet>
+            <directory>${basedir}/target/features-repo</directory>
+            <outputDirectory>/system</outputDirectory>
+        </fileSet>
+        
+	    <!-- Copy source and examples directory -->
+	    <fileSet>
+	        <directory>${basedir}/..</directory>
+	        <outputDirectory>/sources</outputDirectory>
+	        <includes>
+	            <include>activiti-karaf-parent/**/</include>
+                <include>activiti-bpmn-archetype/**/</include>
+                <include>activiti-karaf-examples/**/</include>	            
+	        </includes>
+	        <excludes>
+	            <exclude>mvn</exclude>
+	            <exclude>build.sh</exclude>
+	            <exclude>**/target/</exclude>
+	            <exclude>**/.settings/</exclude>
+	            <exclude>**/.gitignore</exclude>
+	            <exclude>**/.repository/</exclude>
+	        </excludes>
+	        <lineEnding>dos</lineEnding>
+	    </fileSet>  
+    <!--     
+    <fileSet>
+        <directory>${basedir}/../activiti-karaf-parent</directory>
+        <outputDirectory>/sources/activiti-karaf-parent</outputDirectory>
+        <includes>
+            <include>pom.xml</include>
+            <include>**/</include>
+        </includes>
+        <excludes>
+            <exclude>mvn</exclude>
+            <exclude>build.sh</exclude>
+            <exclude>**/target/</exclude>
+            <exclude>**/.settings/</exclude>
+            <exclude>**/.gitignore</exclude>
+            <exclude>**/.repository/</exclude>
+        </excludes>
+        <lineEnding>dos</lineEnding>
+    </fileSet>  
+    <fileSet>
+        <directory>${basedir}/../activiti-bpmn-archetype</directory>
+        <outputDirectory>/sources/activiti-bpmn-archetype</outputDirectory>
+        <includes>
+            <include>pom.xml</include>
+            <include>**/</include>
+        </includes>
+        <excludes>
+            <exclude>mvn</exclude>
+            <exclude>build.sh</exclude>
+            <exclude>**/target/</exclude>
+            <exclude>**/.settings/</exclude>
+            <exclude>**/.gitignore</exclude>
+            <exclude>**/.repository/</exclude>
+        </excludes>
+        <lineEnding>dos</lineEnding>
+    </fileSet>            
+	<fileSet>
+		<directory>${basedir}/../activiti-karaf-examples</directory>
+		<outputDirectory>/sources/activiti-karaf-examples</outputDirectory>
+		<includes>
+			<include>pom.xml</include>
+			<include>**/</include>
+		</includes>
+		<excludes>
+			<exclude>mvn</exclude>
+			<exclude>build.sh</exclude>
+			<exclude>**/target/</exclude>
+			<exclude>**/.settings/</exclude>
+			<exclude>**/.gitignore</exclude>
+			<exclude>**/.repository/</exclude>
+		</excludes>
+		<lineEnding>dos</lineEnding>
+	</fileSet> 
+    -->
+    </fileSets>
+    
+    <files>
+      
+        <!-- Copy the branding jar -->
+        <file>
+            <source>${basedir}/target/dependencies/activiti-karaf-branding.jar</source>
+            <outputDirectory>/lib/</outputDirectory>
+            <fileMode>0644</fileMode>
+        </file>
+        <!-- Copy the activiti-karaf features descriptor -->
+        <!-- 
+        <file>
+            <source>${basedir}/target/classes/features.xml</source>
+            <outputDirectory>system/org/activiti/karaf/activiti-karaf-feature/${version}</outputDirectory>
+            <destName>activiti-karaf-feature-${version}-features.xml</destName>
+            <fileMode>0644</fileMode>
+            <lineEnding>dos</lineEnding>
+        </file>
+    	 -->
+    </files>
+  
+</assembly>
