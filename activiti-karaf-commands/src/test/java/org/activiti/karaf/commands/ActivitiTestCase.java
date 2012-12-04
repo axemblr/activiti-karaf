@@ -14,38 +14,30 @@
  * limitations under the License.
  */
 
-
 package org.activiti.karaf.commands;
-
-import org.junit.Assert;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.Task;
 import org.activiti.engine.test.ActivitiRule;
-import org.activiti.engine.test.Deployment;
 import org.junit.After;
 import org.junit.Rule;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
- * 
  * @author Srinivasan Chikkala
- *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:activiti.cfg.xml")
-public abstract class BPMTestCase {
+public abstract class ActivitiTestCase {
+
     @Autowired
     private ProcessEngine processEngine;
 
@@ -69,29 +61,29 @@ public abstract class BPMTestCase {
     protected ProcessEngine getProcessEngine() {
         return this.processEngine;
     }
-    
+
     protected ProcessInstance startProcess(String processKey) throws Exception {
         return startProcess(processKey, new HashMap<String, Object>());
     }
-    
+
     protected ProcessInstance startProcess(String processKey, Map<String, Object> variables) throws Exception {
 
         ProcessInstance processInstance = runtimeService
-                .startProcessInstanceByKey(processKey, variables);
+            .startProcessInstanceByKey(processKey, variables);
         String id = processInstance.getId();
         System.out.println("Started process instance id " + id);
         long count = runtimeService.createProcessInstanceQuery().count();
-        
+
         // Assert.assertEquals(0, count);
 
         HistoricProcessInstance historicProcessInstance = processEngine
-                .getHistoryService().createHistoricProcessInstanceQuery()
-                .processInstanceId(id).singleResult();
-        
+            .getHistoryService().createHistoricProcessInstanceQuery()
+            .processInstanceId(id).singleResult();
+
         // Assert.assertNotNull(historicProcessInstance);
-        if (historicProcessInstance != null ) {
+        if (historicProcessInstance != null) {
             System.out.println("Finished " + processKey + "Instance. took "
-                    + historicProcessInstance.getDurationInMillis() + " millis");
+                + historicProcessInstance.getDurationInMillis() + " millis");
         }
         return processInstance;
     }

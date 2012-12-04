@@ -27,52 +27,40 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * 
  * @author Srinivasan Chikkala
  */
-public class InfoBPMCommandTest extends BPMTestCase {
-
-    public InfoBPMCommandTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
+public class InfoActivitiCommandTest extends ActivitiTestCase {
 
     @Test
-    @Deployment(resources = { "diagrams/test-bpm-1.bpmn20.xml", "diagrams/test-bpm-2.bpmn20.xml",
-            "diagrams/test-bpm-3.bpmn20.xml" })
+    @Deployment(resources = {"diagrams/test-bpm-1.bpmn20.xml", "diagrams/test-bpm-2.bpmn20.xml",
+        "diagrams/test-bpm-3.bpmn20.xml"})
     public void testListBPMCommand1() throws Exception {
         // fail("The test case is a prototype.");
         String processKey = "Test-bpm-1";
         Map<String, Object> vars = new TreeMap<String, Object>();
         vars.put("myfoo", new Foo());
         vars.put("mybar", new Bar());
-        vars.put("my.array", new Object[] {new Foo(), new Bar()});
+        vars.put("my.array", new Object[]{new Foo(), new Bar()});
         ProcessInstance pi = this.startProcess(processKey, vars);
-        InfoBPMCommand infoCmd = new InfoBPMCommand();
+        InfoActivitiCommand infoCmd = new InfoActivitiCommand();
         infoCmd.setProcessEngine(this.getProcessEngine());
         infoCmd.setInstanceID(pi.getId());
         infoCmd.doExecute();
 
-          // DefaultBPMPrintHandler printHandler = (DefaultBPMPrintHandler)infoCmd.findBPMPrintHandler();
-          // System.out.println("##### BPM PROCESS VARS JSON ####");
-          // printHandler.printVariables(new PrintWriter(System.out, true), vars);
+        // DefaultActivitiPrintHandler printHandler = (DefaultActivitiPrintHandler)infoCmd.findBPMPrintHandler();
+        // System.out.println("##### BPM PROCESS VARS JSON ####");
+        // printHandler.printVariables(new PrintWriter(System.out, true), vars);
 
     }
 
     public static class Foo implements Serializable {
-        
+
         private static final long serialVersionUID = 1L;
         private String myfoo = "foo2";
         private boolean yes;
-        private String[] users = { "foo1", "foo2", "foo3" };
+        private String[] users = {"foo1", "foo2", "foo3"};
         private Bar fooBar = new Bar();
-               
+
         public Bar getFooBar() {
             return fooBar;
         }
@@ -104,38 +92,43 @@ public class InfoBPMCommandTest extends BPMTestCase {
         public void setUsers(String[] users) {
             this.users = users;
         }
-        
+
         public static Foo getFoo() {
             return new Foo();
         }
     }
-    
+
     public static class Bar implements Serializable {
-        
+
         private static final long serialVersionUID = 1L;
         private String mybar = "bar3";
         private boolean yes;
-        private String[] users = { "bar1", "bar2", "bar3" };
-        
+        private String[] users = {"bar1", "bar2", "bar3"};
+
         public String getMybar() {
             return mybar;
         }
+
         public void setMybar(String mybar) {
             this.mybar = mybar;
         }
+
         public boolean isYes() {
             return yes;
         }
+
         public void setYes(boolean yes) {
             this.yes = yes;
         }
+
         public String[] getUsers() {
             return users;
         }
+
         public void setUsers(String[] users) {
             this.users = users;
         }
-        
-    }    
+
+    }
 
 }

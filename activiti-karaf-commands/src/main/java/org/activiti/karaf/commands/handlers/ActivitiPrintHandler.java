@@ -14,45 +14,34 @@
  * limitations under the License.
  */
 
-package org.activiti.karaf.commands;
+package org.activiti.karaf.commands.handlers;
 
 import java.io.PrintWriter;
-
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
 
 /**
  * Service interface whose implementations can handle process variables printing as part of bpm:info cmd.
- * service providers can register implemenation of this interface as a OSGi service which the bpm:info cmd
+ * service providers can register implementation of this interface as a OSGi service which the bpm:info cmd
  * can lookup and use to print a bpmn process specific variable information.
- * 
+ * <p/>
  * Each OSGi service registered can have the following set of properties
  * process-definition=<process-definition-id> - which handles all process instances variable printing for this
  * process definition.
  * process-var-name=<name-of-the-var> - which handles all process instances that contains this variable name
  * useful when you want to handles any process definitions that contains this variable.
- * 
- * 
+ *
  * @author Srinivasan Chikkala
- * 
  */
-public interface BPMPrintHandler {
+public interface ActivitiPrintHandler {
+
     /**
-     * print instance level bpmn process variable data
-     * 
-     * @param out
-     * @param verbose
-     * @param quiet
-     * @param hpi
+     * Print instance level Activiti process variable data
      */
     void printInstanceData(PrintWriter out, boolean verbose, boolean quiet, HistoricProcessInstance hpi);
+
     /**
-     * print activity level bpmn process variable data
-     * 
-     * @param out
-     * @param verbose
-     * @param quiet
-     * @param actInst
+     * Print activity level Activiti process variable data
      */
     void printActivityData(PrintWriter out, boolean verbose, boolean quiet, HistoricActivityInstance actInst);
 }

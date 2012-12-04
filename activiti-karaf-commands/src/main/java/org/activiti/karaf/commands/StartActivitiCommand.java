@@ -26,7 +26,7 @@ import org.apache.felix.gogo.commands.Command;
  * @author Srinivasan Chikkala
  */
 @Command(scope = "act", name = "start", description = "Starts the BPMN process instance from a deployed process definition")
-public class StartBPMCommand extends BPMCommand {
+public class StartActivitiCommand extends ActivitiCommand {
 
     @Argument(index=0, name = "definitionID", description = "BPMN Process definition ID to start an instance of it.", required=true, multiValued=false)
     private String definitionID;

@@ -21,38 +21,38 @@
 	xmlns:shell="http://karaf.apache.org/xmlns/shell/v1.0.0"
 	xmlns:cfg="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0">
 	<shell:command-bundle>
-		<shell:command name="act/list">
-			<shell:action class="org.activiti.karaf.commands.ListBPMCommand">
+		<shell:command name="activiti/list">
+			<shell:action class="org.activiti.karaf.commands.ListActivitiCommand">
 				<shell:property name="processEngine" ref="processEngineRef" />
 			</shell:action>
 		</shell:command>
-		<shell:command name="act/start">
-			<shell:action class="org.activiti.karaf.commands.StartBPMCommand">
+		<shell:command name="activiti/start">
+			<shell:action class="org.activiti.karaf.commands.StartActivitiCommand">
 				<shell:property name="processEngine" ref="processEngineRef" />
 			</shell:action>
 		</shell:command>
-		<shell:command name="act/kill">
-			<shell:action class="org.activiti.karaf.commands.KillBPMCommand">
+		<shell:command name="activiti/kill">
+			<shell:action class="org.activiti.karaf.commands.KillActivitiCommand">
 				<shell:property name="processEngine" ref="processEngineRef" />
 			</shell:action>
 		</shell:command>
-		<shell:command name="act/signal">
-			<shell:action class="org.activiti.karaf.commands.SignalBPMCommand">
+		<shell:command name="activiti/signal">
+			<shell:action class="org.activiti.karaf.commands.SignalActivitiCommand">
 				<shell:property name="processEngine" ref="processEngineRef" />
 			</shell:action>
 		</shell:command>
-		<shell:command name="act/undeploy">
-			<shell:action class="org.activiti.karaf.commands.UndeployBPMCommand">
+		<shell:command name="activiti/undeploy">
+			<shell:action class="org.activiti.karaf.commands.UndeployActivitiCommand">
 				<shell:property name="processEngine" ref="processEngineRef" />
 			</shell:action>
 		</shell:command>
-		<shell:command name="act/clean-history">
-			<shell:action class="org.activiti.karaf.commands.CleanHistoryBPMCommand">
+		<shell:command name="activiti/clean-history">
+			<shell:action class="org.activiti.karaf.commands.CleanHistoryActivitiCommand">
 				<shell:property name="processEngine" ref="processEngineRef" />
 			</shell:action>
 		</shell:command>
-		<shell:command name="act/info">
-			<shell:action class="org.activiti.karaf.commands.InfoBPMCommand">
+		<shell:command name="activiti/info">
+			<shell:action class="org.activiti.karaf.commands.InfoActivitiCommand">
 				<shell:property name="processEngine" ref="processEngineRef" />
 			</shell:action>
 		</shell:command>

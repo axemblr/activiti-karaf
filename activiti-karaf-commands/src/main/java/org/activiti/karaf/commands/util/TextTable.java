@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.karaf.commands;
+package org.activiti.karaf.commands.util;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -21,27 +21,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author Srinivasan Chikkala
  */
 public class TextTable {
-    private static final int DEF_WIDTH = 3;
+
+    private static final int DEFAULT_WIDTH = 3;
     private int col;
-    private List<String> colHeaders;
-    private List<Integer> colWidths;
+
+    private List<String> columnHeaders;
+    private List<Integer> columnWidths;
     private List<List<String>> rows;
 
     public TextTable(int col) {
         this.col = col;
-        this.colHeaders = new ArrayList<String>();
-        this.colWidths = new ArrayList<Integer>();
+        this.columnHeaders = new ArrayList<String>();
+        this.columnWidths = new ArrayList<Integer>();
         this.rows = new ArrayList<List<String>>();
     }
 
     public void addHeaders(String... headers) {
         for (String header : headers) {
-            this.colHeaders.add(header);
-            this.colWidths.add(DEF_WIDTH);
+            this.columnHeaders.add(header);
+            this.columnWidths.add(DEFAULT_WIDTH);
         }
     }
 
@@ -49,15 +50,16 @@ public class TextTable {
         List<String> row = new ArrayList<String>();
         rows.add(row);
         if (colValues != null && colValues.length > this.col) {
-            throw new IllegalArgumentException("Number of Column values passed are more than the tables column cound " + this.col);
+            throw new IllegalArgumentException("Number of Column values passed are more than the tables " +
+                "column cound " + this.col);
         }
         for (int i = 0; i < this.col; ++i) {
             String colValue = "";
-            if ((i < colValues.length) && (colValues[i] != null) ) {
+            if ((i < colValues.length) && (colValues[i] != null)) {
                 colValue = colValues[i];
-                Integer colWidth = this.colWidths.get(i);
+                Integer colWidth = this.columnWidths.get(i);
                 if (colWidth < colValue.length()) {
-                    this.colWidths.set(i, colValue.length());
+                    this.columnWidths.set(i, colValue.length());
                 }
             }
             row.add(colValue);
@@ -68,12 +70,13 @@ public class TextTable {
         PrintWriter out = new PrintWriter(stremaOut, true);
         print(out);
     }
+
     public void print(PrintWriter out) {
         StringBuilder hdrFmtBuff = new StringBuilder();
         StringBuilder rowFmtBuff = new StringBuilder();
         // " %-20.20s   %-20.20s [%-20.20s]\n";
         // "[%-20.20s] [%-20.20s] [%-20.20s]\n";
-        for (Integer width : this.colWidths) {
+        for (Integer width : this.columnWidths) {
             hdrFmtBuff.append(" %-").append(width).append(".").append(width).append("s ");
             rowFmtBuff.append("[%-").append(width).append(".").append(width).append("s]");
         }
@@ -81,12 +84,11 @@ public class TextTable {
         rowFmtBuff.append("\n");
         String hdrFmt = hdrFmtBuff.toString();
         String rowFmt = rowFmtBuff.toString();
-        // System.out.println("Header format: " + hdrFmt);
-        // System.out.println("Row format: " + rowFmt);
-        out.printf(hdrFmt, this.colHeaders.toArray());
+
+        out.printf(hdrFmt, this.columnHeaders.toArray());
         for (List<String> row : this.rows) {
             out.printf(rowFmt, row.toArray());
         }
     }
-    
+
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.activiti.karaf.commands;
+package org.activiti.karaf.commands.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,13 +27,13 @@ import java.util.Map;
 import java.util.TimeZone;
 
 /**
- * this class provides common utils cmd processing
- * 
+ * This class provides common utils for commands processing
+ *
  * @author Srinivasan Chikkala
- * 
  */
-public class CmdUtil {
-    public static final CmdUtil UTIL = new CmdUtil();
+public class Commands {
+
+    public static final Commands UTIL = new Commands();
 
     public void printNameValues(PrintWriter out, Map<String, String> nvMap) {
         String fmt = "  %-16.16s %-20.60s\n";
@@ -69,25 +69,23 @@ public class CmdUtil {
                 out.printf("  %-16.16s %s\n", tabSpace, line);
             }
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
     /**
-     * convert a simple object to string.
-     * 
-     * @param obj
-     *            object .
+     * Convert a simple object to string.
+     *
+     * @param obj object .
      * @return string if the object is simple. else return null.
      */
     public String valueOf(Object obj) {
         String value = null;
         if (obj == null) {
             value = "NULL";
-        } else if (obj.getClass().isPrimitive() 
-                || obj.getClass().isEnum() 
-                || obj instanceof java.lang.String) {
+        } else if (obj.getClass().isPrimitive()
+            || obj.getClass().isEnum()
+            || obj instanceof java.lang.String) {
             value = obj.toString();
         } else if (obj instanceof Date) {
             value = formatDate((Date) obj);

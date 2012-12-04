@@ -25,45 +25,48 @@ import org.apache.felix.gogo.commands.Command;
 import org.apache.felix.gogo.commands.Option;
 
 /**
- *
  * @author Srinivasan Chikkala
  */
-@Command(scope = "act", name = "undeploy", description = "Undeploys the BPMN Deployments(Process definition, images, bar files etc") 
-public class UndeployBPMCommand extends BPMCommand {
-    
-    @Argument(index=0, name = "deploymentIDs", description = "Deployment IDs of the BPMN deployments for undeploying", required=false, multiValued=true)
+@Command(scope = "activiti", name = "undeploy", description = "Undeploys the Activiti Deployments " +
+    "(Process definition, images, bar files etc")
+public class UndeployActivitiCommand extends ActivitiCommand {
+
+    @Argument(index = 0, name = "deploymentIDs", description = "Deployment IDs of the Activiti deployments " +
+        "for undeploying", required = false, multiValued = true)
     private String[] deploymentIDs;
-    
-    @Option(name = "-a", aliases = "--all", description = "Undeploys all BPMN deployments ")
+
+    @Option(name = "-a", aliases = "--all", description = "Undeploys all Activiti deployments ")
     private boolean undeployAll;
-    
-    @Option(name = "-c", aliases = "--cascade", description = "Deletes the given deployment and cascade deletion to process instances, history process instances and jobs.")
+
+    @Option(name = "-c", aliases = "--cascade", description = "Deletes the given deployment and cascade deletion to " +
+        "process instances, history process instances and jobs.")
     private boolean cascade;
-    
-    
+
+
     @Override
     protected Object doExecute() throws Exception {
-        ProcessEngine pe = this.getProcessEngine();
-        if (pe == null) {
+        ProcessEngine engine = this.getProcessEngine();
+        if (engine == null) {
             System.out.println("Process Engine NOT Found!");
             return null;
         }
-               
-        RepositoryService repo = pe.getRepositoryService();
-        
-       if (this.deploymentIDs != null && this.deploymentIDs.length > 0) {
+
+        RepositoryService repo = engine.getRepositoryService();
+
+        if (this.deploymentIDs != null && this.deploymentIDs.length > 0) {
             for (String deploymentID : this.deploymentIDs) {
                 repo.deleteDeployment(deploymentID, this.cascade);
                 System.out.printf("Undeployed %s \n", deploymentID);
             }
             return null;
         }
-        
+
         if (!undeployAll) {
-            System.out.println("BPMN Deployment IDs required or use the command with -a or --all option for all undeployments");
-            return null;            
+            System.out.println("Activiti Deployment IDs required or use the command with -a or --all " +
+                "option for all undeployments");
+            return null;
         } else {
-            System.out.println("Undeploying all BPMN deployments...");
+            System.out.println("Undeploying all Activiti deployments...");
             List<Deployment> depList = repo.createDeploymentQuery().orderByDeploymenTime().asc().list();
             for (Deployment dep : depList) {
                 String deploymentID = dep.getId();
@@ -71,8 +74,8 @@ public class UndeployBPMCommand extends BPMCommand {
                 System.out.printf("Undeployed %s \n", deploymentID);
             }
         }
-       
+
         return null;
     }
-    
+
 }

@@ -25,43 +25,47 @@ import org.apache.felix.gogo.commands.Command;
 import org.apache.felix.gogo.commands.Option;
 
 /**
- *
  * @author Srinivasan Chikkala
  */
-@Command(scope = "act", name = "signal", description = "Signals any active executions in BPMN process instances")
-public class SignalBPMCommand extends BPMCommand {
+@Command(scope = "activiti", name = "signal",
+    description = "Signals any active executions in Activiti process instances")
+public class SignalActivitiCommand extends ActivitiCommand {
 
-    @Argument(index = 0, name = "instanceIDs", description = "Instance IDs to signal set of active process instances", required = false, multiValued = true)
+    @Argument(index = 0, name = "instanceIDs", description = "Instance IDs to signal set of active process " +
+        "instances", required = false, multiValued = true)
     private String[] instanceIDs;
+
     @Option(name = "-a", aliases = "--all", description = "Signal all active process instances")
     private boolean signalAll;
-    @Option(name = "-activities", aliases = "--activities", required = false, multiValued = true, description = "Signal all activities in a process instances")
+
+    @Option(name = "-activities", aliases = "--activities", required = false,
+        multiValued = true, description = "Signal all activities in a process instances")
     private String[] activities;
 
     @Override
     protected Object doExecute() throws Exception {
-        ProcessEngine pe = this.getProcessEngine();
-        if (pe == null) {
+        ProcessEngine engine = this.getProcessEngine();
+        if (engine == null) {
             System.out.println("Process Engine NOT Found!");
             return null;
         }
-        RuntimeService rt = pe.getRuntimeService();
-        
+        RuntimeService runtimeService = engine.getRuntimeService();
+
         if (this.instanceIDs != null && this.instanceIDs.length > 0) {
             for (String instanceID : this.instanceIDs) {
-                signal(rt, instanceID, this.activities);
+                signal(runtimeService, instanceID, this.activities);
             }
             return null;
         }
-        
+
         if (!signalAll) {
             System.out.println("Process instance IDs required or use the command with -a or --all option");
-            return null;            
+            return null;
         } else {
             System.out.println("Signalling all executions in all active process instances...");
-            List<ProcessInstance> piList = rt.createProcessInstanceQuery().orderByProcessInstanceId().asc().list();
+            List<ProcessInstance> piList = runtimeService.createProcessInstanceQuery().orderByProcessInstanceId().asc().list();
             for (ProcessInstance pi : piList) {
-                signal(rt, pi.getProcessInstanceId(), this.activities);
+                signal(runtimeService, pi.getProcessInstanceId(), this.activities);
             }
         }
 
@@ -85,8 +89,8 @@ public class SignalBPMCommand extends BPMCommand {
             // signal all executions in the instance 
             System.out.println("Signaling all active executions in the process instance " + pi);
             List<Execution> executions = rt.createExecutionQuery()
-                    .processInstanceId(pi)
-                    .orderByProcessInstanceId().asc().list();
+                .processInstanceId(pi)
+                .orderByProcessInstanceId().asc().list();
             for (Execution exec : executions) {
                 signal(rt, exec);
             }
@@ -94,9 +98,9 @@ public class SignalBPMCommand extends BPMCommand {
             for (String activity : activities) {
                 System.out.printf("Signaling activity %s in process instance %s \n", activity, pi);
                 List<Execution> executions = rt.createExecutionQuery()
-                        .processInstanceId(pi)
-                        .activityId(activity)
-                        .orderByProcessInstanceId().asc().list();
+                    .processInstanceId(pi)
+                    .activityId(activity)
+                    .orderByProcessInstanceId().asc().list();
                 for (Execution exec : executions) {
                     signal(rt, exec);
                 }

@@ -24,50 +24,49 @@ import org.apache.felix.gogo.commands.Command;
 import org.apache.felix.gogo.commands.Option;
 
 /**
- *
  * @author Srinivasan Chikkala
  */
-@Command(scope = "act", name = "kill", description = "Kills any active BPMN process instances") 
-public class KillBPMCommand extends BPMCommand {
-    
-    @Argument(index=0, name = "instanceIDs", description = "Instance IDs to kill set of active process instances", required=false, multiValued=true)
+@Command(scope = "activiti", name = "kill", description = "Kills any active Activiti process instances")
+public class KillActivitiCommand extends ActivitiCommand {
+
+    @Argument(index = 0, name = "instanceIDs", description = "Instance IDs to kill set of active process instances",
+        required = false, multiValued = true)
     private String[] instanceIDs;
-    
+
     @Option(name = "-a", aliases = "--all", description = "Kill all active process instances")
     private boolean killAll;
-    
+
     @Override
     protected Object doExecute() throws Exception {
-        ProcessEngine pe = this.getProcessEngine();
-        if (pe == null) {
+        ProcessEngine processEngine = this.getProcessEngine();
+        if (processEngine == null) {
             System.out.println("Process Engine NOT Found!");
             return null;
         }
-               
-        RuntimeService rt = pe.getRuntimeService();
-        
-       if (this.instanceIDs != null && this.instanceIDs.length > 0) {
+
+        RuntimeService runtimeService = processEngine.getRuntimeService();
+
+        if (this.instanceIDs != null && this.instanceIDs.length > 0) {
             for (String instanceID : instanceIDs) {
-                rt.deleteProcessInstance(instanceID, "Forcefully terminating the instance");
+                runtimeService.deleteProcessInstance(instanceID, "Forcefully terminating the instance");
                 System.out.printf("Process instance %s terminated\n", instanceID);
             }
             return null;
         }
-        
+
         if (!killAll) {
             System.out.println("Process instance IDs required or use the command with -a or --all option");
-            return null;            
+            return null;
         } else {
             System.out.println("Signalling all executions in all active process instances...");
-            List<ProcessInstance> piList = rt.createProcessInstanceQuery().orderByProcessInstanceId().asc().list();
+            List<ProcessInstance> piList = runtimeService.createProcessInstanceQuery().orderByProcessInstanceId().asc().list();
             for (ProcessInstance pi : piList) {
                 String instanceID = pi.getProcessInstanceId();
-                rt.deleteProcessInstance(instanceID, "Forcefully terminating the instance");
+                runtimeService.deleteProcessInstance(instanceID, "Forcefully terminating the instance");
                 System.out.printf("Process instance %s terminated\n", instanceID);
             }
         }
-       
+
         return null;
     }
-    
 }

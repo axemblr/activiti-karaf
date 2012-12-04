@@ -17,35 +17,21 @@
 package org.activiti.karaf.commands;
 
 import org.activiti.engine.test.Deployment;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- *
  * @author Srinivasan Chikkala
  */
-public class ListBPMCommandTest extends BPMTestCase {
-    
-    public ListBPMCommandTest() {
-    }
+public class ListActivitiCommandTest extends ActivitiTestCase {
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-    
     @Test
-    @Deployment(resources = { "diagrams/test-bpm-1.bpmn20.xml", "diagrams/test-bpm-2.bpmn20.xml", "diagrams/test-bpm-3.bpmn20.xml" })
+    @Deployment(resources = {"diagrams/test-bpm-1.bpmn20.xml", "diagrams/test-bpm-2.bpmn20.xml",
+        "diagrams/test-bpm-3.bpmn20.xml"})
     public void testListBPMCommand1() throws Exception {
-        // fail("The test case is a prototype.");
-        ListBPMCommand listCmd = new ListBPMCommand();
+        ListActivitiCommand listCmd = new ListActivitiCommand();
         listCmd.setProcessEngine(this.getProcessEngine());
         listCmd.doExecute();
     }
-    
-    
+
+
 }

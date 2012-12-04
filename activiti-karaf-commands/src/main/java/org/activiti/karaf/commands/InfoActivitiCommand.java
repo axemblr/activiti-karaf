@@ -20,7 +20,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
@@ -30,6 +29,9 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.karaf.commands.handlers.ActivitiPrintHandler;
+import org.activiti.karaf.commands.handlers.DefaultActivitiPrintHandler;
+import org.activiti.karaf.commands.util.Commands;
 import org.apache.felix.gogo.commands.Argument;
 import org.apache.felix.gogo.commands.Command;
 import org.apache.felix.gogo.commands.Option;
@@ -37,21 +39,24 @@ import org.apache.felix.gogo.commands.Option;
 /**
  * karaf command class that prints the details about the bpmn process inlcuding deployment, definition,
  * instance and process varaible details.
- * 
+ *
  * @author Srinivasan Chikkala
  */
-@Command(scope = "act", name = "info", description = "Provides details about the BPMN process instance")
-public class InfoBPMCommand extends BPMCommand {
-    private static final Logger LOG = Logger.getLogger(InfoBPMCommand.class.getName());
+@Command(scope = "activiti", name = "info", description = "Provides details about the Activiti process instance")
+public class InfoActivitiCommand extends ActivitiCommand {
+    private static final Logger LOG = Logger.getLogger(InfoActivitiCommand.class.getName());
 
-    @Argument(index = 0, name = "instanceID", description = "Instance ID for which the details should be displayed", required = true, multiValued = false)
+    @Argument(index = 0, name = "instanceID", description = "Instance ID for which the details should " +
+        "be displayed", required = true, multiValued = false)
     private String instanceID;
+
     @Option(name = "-v", aliases = "--verbose", description = "Full details of the process instance")
     private boolean verbose;
-    @Option(name = "-q", aliases = "--quiet", description = "Show minimun required details of the process instance")
+
+    @Option(name = "-q", aliases = "--quiet", description = "Show minimum required details of the process instance")
     private boolean quiet;
 
-    private BPMPrintHandler printHandler;
+    private ActivitiPrintHandler printHandler;
 
     public boolean isVerbose() {
         return verbose;
@@ -77,11 +82,11 @@ public class InfoBPMCommand extends BPMCommand {
         this.instanceID = instanceID;
     }
 
-    public BPMPrintHandler getPrintHandler() {
+    public ActivitiPrintHandler getPrintHandler() {
         return printHandler;
     }
 
-    public void setPrintHandler(BPMPrintHandler printHandler) {
+    public void setPrintHandler(ActivitiPrintHandler printHandler) {
         this.printHandler = printHandler;
     }
 
@@ -114,17 +119,17 @@ public class InfoBPMCommand extends BPMCommand {
         return null;
     }
 
-    protected BPMPrintHandler findBPMPrintHandler() {
-        BPMPrintHandler handler = null;
-        List<BPMPrintHandler> hList = null;
+    protected ActivitiPrintHandler findBPMPrintHandler() {
+        ActivitiPrintHandler handler = null;
+        List<ActivitiPrintHandler> hList = null;
         try {
             String filter = null; // add the filter here per process.
-            hList = this.getAllServices(BPMPrintHandler.class, filter);
+            hList = this.getAllServices(ActivitiPrintHandler.class, filter);
         } catch (Exception e) {
             e.printStackTrace();
         }
         if (hList == null || hList.size() == 0) {
-            DefaultBPMPrintHandler defHandler = new DefaultBPMPrintHandler();
+            DefaultActivitiPrintHandler defHandler = new DefaultActivitiPrintHandler();
             defHandler.setProcessEngine(this.getProcessEngine());
             handler = defHandler;
         } else {
@@ -137,8 +142,8 @@ public class InfoBPMCommand extends BPMCommand {
         LinkedHashMap<String, String> nvMap = new LinkedHashMap<String, String>();
         nvMap.put("Deployment ID", depInfo.getId());
         nvMap.put("Deployment Name", depInfo.getName());
-        nvMap.put("Deployment Time", CmdUtil.UTIL.formatDate(depInfo.getDeploymentTime()));
-        CmdUtil.UTIL.printNameValues(new PrintWriter(System.out, true), nvMap);
+        nvMap.put("Deployment Time", Commands.UTIL.formatDate(depInfo.getDeploymentTime()));
+        Commands.UTIL.printNameValues(new PrintWriter(System.out, true), nvMap);
     }
 
     protected void printProcessDefinitionInfo(ProcessDefinition pd) {
@@ -147,7 +152,7 @@ public class InfoBPMCommand extends BPMCommand {
         nvMap.put("Definition Name", pd.getName());
         nvMap.put("Version", Integer.toString(pd.getVersion()));
         nvMap.put("Resource Name", pd.getResourceName());
-        CmdUtil.UTIL.printNameValues(new PrintWriter(System.out, true), nvMap);
+        Commands.UTIL.printNameValues(new PrintWriter(System.out, true), nvMap);
 
     }
 
@@ -156,14 +161,14 @@ public class InfoBPMCommand extends BPMCommand {
         nvMap.put("Instance ID", hpi.getId());
         nvMap.put("Start Activity", hpi.getStartActivityId());
         nvMap.put("End Activity", hpi.getEndActivityId());
-        nvMap.put("Start Time", CmdUtil.UTIL.formatDate(hpi.getStartTime()));
-        nvMap.put("End Time", CmdUtil.UTIL.formatDate(hpi.getEndTime()));
+        nvMap.put("Start Time", Commands.UTIL.formatDate(hpi.getStartTime()));
+        nvMap.put("End Time", Commands.UTIL.formatDate(hpi.getEndTime()));
         if (!this.isQuiet()) {
-            nvMap.put("Duration", CmdUtil.UTIL.formatDuration(hpi.getDurationInMillis()));
+            nvMap.put("Duration", Commands.UTIL.formatDuration(hpi.getDurationInMillis()));
         }
 
         PrintWriter out = new PrintWriter(System.out, true);
-        CmdUtil.UTIL.printNameValues(out, nvMap);
+        Commands.UTIL.printNameValues(out, nvMap);
         // print instance data
         this.getPrintHandler().printInstanceData(out, this.isVerbose(), this.isQuiet(), hpi);
     }
@@ -175,18 +180,18 @@ public class InfoBPMCommand extends BPMCommand {
         if (!this.isQuiet()) {
             nvMap.put("Activity Type", actInst.getActivityType());
         }
-        nvMap.put("Activitiy Name", actInst.getActivityName());
+        nvMap.put("Activity Name", actInst.getActivityName());
         if (!this.isQuiet()) {
             nvMap.put("Execution ID", actInst.getExecutionId());
         }
-        nvMap.put("Start Time", CmdUtil.UTIL.formatDate(actInst.getStartTime()));
-        nvMap.put("End Time", CmdUtil.UTIL.formatDate(actInst.getEndTime()));
+        nvMap.put("Start Time", Commands.UTIL.formatDate(actInst.getStartTime()));
+        nvMap.put("End Time", Commands.UTIL.formatDate(actInst.getEndTime()));
         if (!this.isQuiet()) {
-            nvMap.put("Duration", CmdUtil.UTIL.formatDuration(actInst.getDurationInMillis()));
+            nvMap.put("Duration", Commands.UTIL.formatDuration(actInst.getDurationInMillis()));
         }
 
         PrintWriter out = new PrintWriter(System.out, true);
-        CmdUtil.UTIL.printNameValues(out, nvMap);
+        Commands.UTIL.printNameValues(out, nvMap);
         // print activity vars
         this.getPrintHandler().printActivityData(out, this.isVerbose(), this.isQuiet(), actInst);
         System.out.println("-------------");
@@ -200,7 +205,7 @@ public class InfoBPMCommand extends BPMCommand {
 
         ProcessInstance pi = rt.createProcessInstanceQuery().processInstanceId(pid).singleResult();
         HistoricProcessInstance hpi = hs.createHistoricProcessInstanceQuery().processInstanceId(pid)
-                .singleResult();
+            .singleResult();
         if (pi == null && hpi == null) {
             // both null means. no process with that id.
             System.out.printf("No process details found with process id %s \n", pid);
@@ -228,7 +233,7 @@ public class InfoBPMCommand extends BPMCommand {
         printProcessInstanceInfo(hpi);
 
         List<HistoricActivityInstance> actInstList = hs.createHistoricActivityInstanceQuery()
-                .processInstanceId(hpi.getId()).orderByHistoricActivityInstanceStartTime().asc().list();
+            .processInstanceId(hpi.getId()).orderByHistoricActivityInstanceStartTime().asc().list();
         if (actInstList != null && actInstList.size() > 0) {
             System.out.println("======== Activity Execution Details");
             for (HistoricActivityInstance actInst : actInstList) {

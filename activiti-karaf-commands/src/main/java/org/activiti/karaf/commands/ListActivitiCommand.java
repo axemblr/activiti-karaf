@@ -20,7 +20,6 @@ import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
-
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
@@ -30,28 +29,29 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.karaf.commands.util.TextTable;
 import org.apache.felix.gogo.commands.Command;
 import org.apache.felix.gogo.commands.Option;
 
 /**
- *
  * @author Srinivasan Chikkala
  */
-@Command(scope = "act", name = "list", description = "Displays information about BPMN active process instances, process definitions, history of process instances")
-public class ListBPMCommand extends BPMCommand {
+@Command(scope = "activiti", name = "list", description = "Displays information about Activiti active " +
+    "process instances, process definitions, history of process instances")
+public class ListActivitiCommand extends ActivitiCommand {
 
     @Option(name = "-pi", aliases = "--active", description = "Display information about all active process instances")
     private boolean active;
-    
+
     @Option(name = "-pd", aliases = "--definitions", description = "Display information about all process definitions")
     private boolean definitions;
-    
+
     @Option(name = "-h", aliases = "--history", description = "Display information about history of all process instances")
     private boolean history;
-    
-    @Option(name = "-d", aliases = "--deployments", description = "Display information about all BPMN deployments")
+
+    @Option(name = "-d", aliases = "--deployments", description = "Display information about all Activiti deployments")
     private boolean deployments;
-    
+
 
     @Override
     protected Object doExecute() throws Exception {
@@ -68,28 +68,28 @@ public class ListBPMCommand extends BPMCommand {
             // set all to true;
             this.active = this.definitions = this.history = this.deployments = true;
         }
-        
+
         if (this.deployments) {
             RepositoryService repo = pe.getRepositoryService();
             printBPMNDeployments(out, repo);
         }
-        
+
         if (this.definitions) {
             RepositoryService repo = pe.getRepositoryService();
             printProcessDefinitions(out, repo);
         }
-        
+
         if (this.history) {
             HistoryService his = pe.getHistoryService();
             boolean printActive = !this.active; // if we show active process, dont print then in history 
-            printHistoricProcessInstances(out, his, printActive); 
+            printHistoricProcessInstances(out, his, printActive);
         }
-        
+
         if (this.active) {
             RuntimeService rt = pe.getRuntimeService();
             printActiveProcessInstances(out, rt);
         }
-        
+
 
         return null;
     }
@@ -101,7 +101,7 @@ public class ListBPMCommand extends BPMCommand {
         }
         return dateTxt;
     }
-    
+
     private String formatBpmResource(String bpmResource) {
         if (bpmResource.startsWith("bundleresource:")) {
             return bpmResource.substring("bundleresource:".length());
@@ -112,7 +112,7 @@ public class ListBPMCommand extends BPMCommand {
 
     private void printBPMNDeployments(PrintWriter out, RepositoryService repo) {
 
-    	List<Deployment> depList = repo.createDeploymentQuery().orderByDeploymenTime().asc().list();
+        List<Deployment> depList = repo.createDeploymentQuery().orderByDeploymenTime().asc().list();
 
         out.println();
         out.println("BPMN Deployments");
@@ -121,21 +121,21 @@ public class ListBPMCommand extends BPMCommand {
             out.println("No BPMN Deployments Found.");
             return;
         }
-        
+
         TextTable txtTable = new TextTable(3);
-        
+
         txtTable.addHeaders("ID", "Name", "Deployment Time");
         for (Deployment dep : depList) {
             txtTable.addRow(dep.getId(), dep.getName(), formatDate(dep.getDeploymentTime()));
         }
         txtTable.print(out);
     }
-    
+
     private void printProcessDefinitions(PrintWriter out, RepositoryService repo) {
         // RepositoryService repo = pe.getRepositoryService();
 
         List<ProcessDefinition> pdList =
-                repo.createProcessDefinitionQuery().orderByDeploymentId().asc().list();
+            repo.createProcessDefinitionQuery().orderByDeploymentId().asc().list();
 
         out.println();
         out.println("BPMN Process Definitions");
@@ -144,9 +144,9 @@ public class ListBPMCommand extends BPMCommand {
             out.println("No BPMN Process Defintions Found.");
             return;
         }
-        
+
         TextTable txtTable = new TextTable(4);
-        
+
         txtTable.addHeaders("Definition ID", "Name", "Ver", "Resource");
         for (ProcessDefinition pd : pdList) {
             Integer ver = pd.getVersion();
@@ -157,8 +157,8 @@ public class ListBPMCommand extends BPMCommand {
 
     private String getExecutions(RuntimeService rt, String pi) {
         List<Execution> executions = rt.createExecutionQuery()
-                .processInstanceId(pi)
-                .orderByProcessInstanceId().asc().list();
+            .processInstanceId(pi)
+            .orderByProcessInstanceId().asc().list();
         StringBuilder bld = new StringBuilder();
         boolean first = true;
         for (Execution exec : executions) {
@@ -171,7 +171,7 @@ public class ListBPMCommand extends BPMCommand {
         }
         return bld.toString();
     }
-    
+
     private void printActiveProcessInstances(PrintWriter out, RuntimeService rt) {
 
         List<ProcessInstance> piList = rt.createProcessInstanceQuery().orderByProcessInstanceId().asc().list();
@@ -185,13 +185,13 @@ public class ListBPMCommand extends BPMCommand {
         }
 
         TextTable txtTable = new TextTable(3);
-        
+
         txtTable.addHeaders("Definition ID", "Instance ID", "Executions");
         for (ProcessInstance pi : piList) {
             txtTable.addRow(pi.getProcessDefinitionId(),
-                    pi.getProcessInstanceId(), getExecutions(rt,pi.getProcessInstanceId()));
+                pi.getProcessInstanceId(), getExecutions(rt, pi.getProcessInstanceId()));
         }
-        txtTable.print(out);        
+        txtTable.print(out);
     }
 
     private void printHistoricProcessInstances(PrintWriter out, HistoryService his, boolean printActive) {
@@ -205,9 +205,9 @@ public class ListBPMCommand extends BPMCommand {
             out.println("No History on BPMN Processes.");
             return;
         }
-        
+
         TextTable txtTable = new TextTable(4);
-        
+
         txtTable.addHeaders("Definition ID", "Instance ID", "Start Time", "End Time");
         for (HistoricProcessInstance hpi : hpiList) {
             Date endTime = hpi.getEndTime();
@@ -216,6 +216,6 @@ public class ListBPMCommand extends BPMCommand {
             }
             txtTable.addRow(hpi.getProcessDefinitionId(), hpi.getId(), formatDate(hpi.getStartTime()), formatDate(hpi.getEndTime()));
         }
-        txtTable.print(out);       
+        txtTable.print(out);
     }
 }

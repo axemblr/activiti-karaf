@@ -19,13 +19,12 @@ import org.activiti.engine.ProcessEngine;
 import org.apache.karaf.shell.console.OsgiCommandSupport;
 
 /**
- *
  * @author Srinivasan Chikkala
  */
-public abstract class BPMCommand  extends OsgiCommandSupport {
-    
+public abstract class ActivitiCommand extends OsgiCommandSupport {
+
     private ProcessEngine processEngine;
-    
+
     public ProcessEngine getProcessEngine() {
         return processEngine;
     }

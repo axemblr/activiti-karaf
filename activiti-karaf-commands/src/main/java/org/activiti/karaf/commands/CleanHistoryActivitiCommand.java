@@ -25,48 +25,52 @@ import org.apache.felix.gogo.commands.Command;
 import org.apache.felix.gogo.commands.Option;
 
 /**
- * 
  * @author Srinivasan Chikkala
  */
-@Command(scope = "act", name = "clean-history", description = "Removes history of the BPMN process instances")
-public class CleanHistoryBPMCommand extends BPMCommand {
+@Command(scope = "activiti", name = "clean-history", description = "Removes history of the BPMN process instances")
+public class CleanHistoryActivitiCommand extends ActivitiCommand {
 
-    @Argument(index = 0, name = "instanceIDs", description = "Instance IDs to remove from hisotry", required = false, multiValued = true)
+    @Argument(index = 0, name = "instanceIDs", description = "Instance IDs to remove from history",
+        required = false, multiValued = true)
     private String[] instanceIDs;
-    @Option(name = "-a", aliases = "--all", description = "Remove all BPMN Processes from history")
+
+    @Option(name = "-a", aliases = "--all", description = "Remove all Activiti Processes from history")
     private boolean cleanAll;
-    @Option(name = "-pd", aliases = "--definitions", required = false, multiValued = true, description = "Removes history of process instances started from the definitions")
+
+    @Option(name = "-pd", aliases = "--definitions", required = false, multiValued = true,
+        description = "Removes history of process instances started from the definitions")
     private String[] definitionIDs;
 
     @Override
     protected Object doExecute() throws Exception {
-        ProcessEngine pe = this.getProcessEngine();
-        if (pe == null) {
+        ProcessEngine engine = this.getProcessEngine();
+        if (engine == null) {
             System.out.println("Process Engine NOT Found!");
             return null;
         }
-        HistoryService hs = pe.getHistoryService();
-        
+        HistoryService historyService = engine.getHistoryService();
+
         // order of priority if instnaceIDs or definitionIDs and all on the list
         // process instnaceID and exist or process definitionIDs and exit or process all 
         // TODO figure out how to add mutually exclusive options - instanceIDs | definitions | all
 
         if (this.instanceIDs != null && this.instanceIDs.length > 0) {
-            this.cleanProcessInstanceHistory(hs, this.instanceIDs);
+            this.cleanProcessInstanceHistory(historyService, this.instanceIDs);
             return null;
         }
-        
+
         if (this.definitionIDs != null && this.definitionIDs.length > 0) {
-            this.cleanProcessDefintiionHistory(hs, this.definitionIDs);
+            this.cleanProcessDefinitionHistory(historyService, this.definitionIDs);
             return null;
-        }       
+        }
 
         // clean all history
         if (!cleanAll) {
-            System.out.println("Process instance IDs required or use the command with -a or --all option to clean all history");
+            System.out.println("Process instance IDs required or use the command with -a " +
+                "or --all option to clean all history");
             return null;
         } else {
-            cleanAllHistory(hs);
+            cleanAllHistory(historyService);
         }
 
         return null;
@@ -75,7 +79,7 @@ public class CleanHistoryBPMCommand extends BPMCommand {
     private void cleanAllHistory(HistoryService hs) {
         System.out.println("Cleaning History of All Process Instances...");
         List<HistoricProcessInstance> hpiList = hs.createHistoricProcessInstanceQuery()
-                .orderByProcessDefinitionId().asc().list();
+            .orderByProcessDefinitionId().asc().list();
         if (hpiList == null || hpiList.size() == 0) {
             System.out.println("No Process History found! ");
             return;
@@ -91,7 +95,7 @@ public class CleanHistoryBPMCommand extends BPMCommand {
         for (String instanceId : instances) {
             // query and if exists delete.
             HistoricProcessInstance hpi = hs.createHistoricProcessInstanceQuery()
-                    .processInstanceId(instanceId).singleResult();
+                .processInstanceId(instanceId).singleResult();
             if (hpi != null) {
                 hs.deleteHistoricProcessInstance(hpi.getId());
                 System.out.printf("History removed for process instance %s \n", hpi.getId());
@@ -101,12 +105,12 @@ public class CleanHistoryBPMCommand extends BPMCommand {
         }
     }
 
-    private void cleanProcessDefintiionHistory(HistoryService hs, String... definitions) {
+    private void cleanProcessDefinitionHistory(HistoryService hs, String... definitions) {
 
         for (String definitionId : definitions) {
             List<HistoricProcessInstance> hpiList = hs.createHistoricProcessInstanceQuery()
-                    .processDefinitionId(definitionId)
-                    .orderByProcessDefinitionId().asc().list();
+                .processDefinitionId(definitionId)
+                .orderByProcessDefinitionId().asc().list();
             if (hpiList == null || hpiList.size() == 0) {
                 System.out.printf("No History found for process definition %s \n", definitionId);
                 break;
@@ -115,7 +119,7 @@ public class CleanHistoryBPMCommand extends BPMCommand {
                 String processId = hpi.getId();
                 hs.deleteHistoricProcessInstance(hpi.getId());
                 System.out.printf("History removed for process instance %s with definition %s\n", processId,
-                        definitionId);
+                    definitionId);
             }
         }
     }

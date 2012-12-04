@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.activiti.karaf.commands;
+package org.activiti.karaf.commands.handlers;
 
 import java.io.PrintWriter;
 import java.io.StringReader;
@@ -24,34 +24,34 @@ import java.util.logging.Logger;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.activiti.karaf.commands.util.Commands;
 
 /**
  * Default implementation of the process variable print handler.
- * 
+ *
  * @author Srinivasan Chikkala
- * 
  */
-public class DefaultBPMPrintHandler extends AbstractBPMPrintHandler {
-    
-    private static final Logger LOG = Logger.getLogger(DefaultBPMPrintHandler.class.getName());
+public class DefaultActivitiPrintHandler extends AbstractActivitiPrintHandler {
 
-    protected void printVariable(PrintWriter out,String varName, Object varValue) {
+    private static final Logger LOG = Logger.getLogger(DefaultActivitiPrintHandler.class.getName());
+
+    protected void printVariable(PrintWriter out, String varName, Object varValue) {
         Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .serializeNulls()
-                .excludeFieldsWithModifiers(Modifier.STATIC, Modifier.TRANSIENT, Modifier.VOLATILE)
-                .create();
-        
+            .setPrettyPrinting()
+            .serializeNulls()
+            .excludeFieldsWithModifiers(Modifier.STATIC, Modifier.TRANSIENT, Modifier.VOLATILE)
+            .create();
+
         LOG.info("Printing var " + varName);
         String jsonText = null;
         try {
             jsonText = gson.toJson(varValue);
         } catch (Exception ex) {
             jsonText = "{\n  " + varValue + "\n}"; // use default toString object            
-            LOG.log(Level.INFO, "ERROR Serializing BPM Variable. " + ex.getMessage(), ex);
+            LOG.log(Level.SEVERE, "Serializing Activiti Variable. " + ex.getMessage(), ex);
         }
-        // out.printf("  %s\n", jsonText);
-        CmdUtil.UTIL.printText(out, new StringReader(jsonText), " ");
+
+        Commands.UTIL.printText(out, new StringReader(jsonText), " ");
     }
 
 }
