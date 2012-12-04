@@ -44,7 +44,8 @@
         </activiti.osgi.import.pkg>
         <activiti.osgi.export.pkg>
             org.activiti.karaf.commands,
-            org.activiti.karaf.commands.handlers
+            org.activiti.karaf.commands.handlers,
+            org.activiti.karaf.commands.util
         </activiti.osgi.export.pkg>
         <activiti.artifact>
             org.activiti.karaf.commands
